@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>color-coordinator</title>
+  <link rel="stylesheet" type="text/css" href="style.css"></link>
+  <script type="text/javascript" src="color.js"></script>
+</head>
+
+<body>
+
+  <canvas id="canvas" width="64" height="64" style="float: left;"></canvas>
+  <h1>color-coordinator</h1>
+  <br>
+
+  <select id="mode_select" name="mode_select">
+    <optgroup label="MIXTURE">
+      <option value="Additive_L">Additive(limited)</option>
+      <option value="Additive_R">Additive(regulated)</option>
+      <option value="Subtractive">Subtractive</option>
+    </optgroup>
+    <optgroup label="SCHEME">
+      <option value="Dyads">Complementary(Dyads)</option>
+      <option value="Triads">Triads</option>
+      <option value="Tetrads">Tetrads</option>
+      <option value="Pentads">Pentads</option>
+      <option value="Hexads">Hexads</option>
+      <option value="Split">Split complemental</option>
+      <option value="Natural" disabled>Natural/Complex</option>
+      <option value="Dominant" disabled>Dominant</option>
+      <option value="Gradation" disabled>Hue Gradation</option>
+      <option value="Separation" disabled>Separation</option>
+      <option value="Tonal" disabled>Tonal</option>
+      <option value="Camaïeu" disabled>Camaïeu</option>
+    </optgroup>
+  </select><br>1st color:
+  <input type="color" name="color_selector" value="#ff0000" id="first_color_selector">
+  <input type="text" name="color_expr" value="#ff0000" id="first_color_expr">
+  <br>2nd color:
+  <input type="color" name="color_selector" value="#80ff00" id="second_color_selector">
+  <input type="text" name="color_expr" value="#80ff00" id="second_color_expr">
+  <br>
+  <canvas id="palette" width="600" height="450"></canvas>
+  <p id="result"></p>
+
+  <!-- main javascript -->
+
+  <script type="text/javascript" src="main.js"></script>
+</body>
+
+</html>
