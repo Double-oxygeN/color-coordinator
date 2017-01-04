@@ -54,7 +54,7 @@ window.onload = function (ev) {
       pixeldata = ctx_p.getImageData(mouse.x, mouse.y, 1, 1).data,
       pixel_color = new Color([pixeldata[0], pixeldata[1], pixeldata[2]]);
 
-    result_display.innerHTML = pixel_color.rgb.toColorCode() + "<br>" + pixel_color.rgb.toString() + "<br>" + pixel_color.hsv.toString() + "<br>" + pixel_color.xyz.toYxyString();
+    result_display.innerHTML = pixel_color.rgb.toColorCode() + "<br>" + pixel_color.rgb.toString() + "<br>" + pixel_color.hsv.toString() + "<br>" + pixel_color.hsl.toString() + "<br>" + pixel_color.xyz.toString() + "<br>" + pixel_color.xyz.toYxyString();
   }
   palette.onmouseleave = function (e) {
     result_display.innerHTML = "";
