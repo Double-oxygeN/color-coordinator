@@ -9,6 +9,7 @@ window.onload = function (ev) {
     selected_color2 = document.getElementById('second_color_selector'),
     express_color2 = document.getElementById('second_color_expr'),
     result_display = document.getElementById('result'),
+    change_button = document.getElementById('change_button'),
     eye = new Eye(),
     regulated_color = [],
     first_ID;
@@ -46,6 +47,12 @@ window.onload = function (ev) {
     std_draw_palette();
   };
 
+  change_button.onclick = function (e) {
+    [selected_color1.value, selected_color2.value] = [selected_color2.value, selected_color1.value];
+    [express_color1.value, express_color2.value] = [selected_color1.value, selected_color2.value];
+    std_draw_palette();
+  };
+
   palette.onmousemove = function (e) {
     let mouse = {
         x: e.clientX - e.target.offsetLeft,
@@ -55,10 +62,10 @@ window.onload = function (ev) {
       pixel_color = new Color([pixeldata[0], pixeldata[1], pixeldata[2]]);
 
     result_display.innerHTML = pixel_color.rgb.toColorCode() + "<br>" + pixel_color.rgb.toString() + "<br>" + pixel_color.hsv.toString() + "<br>" + pixel_color.hsl.toString() + "<br>" + pixel_color.xyz.toString() + "<br>" + pixel_color.xyz.toYxyString();
-  }
+  };
   palette.onmouseleave = function (e) {
     result_display.innerHTML = "";
-  }
+  };
 };
 
 function draw_chromaticity_diagram(context, size, Y) {
