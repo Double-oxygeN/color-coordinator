@@ -123,6 +123,27 @@ function Color(args) {
   this.subtract = function (another) {
     return new Color(this.xyz.subtract(another.xyz).toString());
   };
+  this.multiply_rgb = function (another) {
+    return new Color(this.rgb.var_mix(another.rgb, (x, y) => x * y / 255).toString());
+  };
+  this.multiply_xyz = function (another) {
+    return new Color(this.xyz.var_mix(another.xyz, (x, y) => x * y).toString());
+  };
+  this.geo_mean_rgb = function (another) {
+    return new Color(this.rgb.var_mix(another.rgb, (x, y) => 255 * Math.sqrt((x / 255) * (y / 255))).toString());
+  };
+  this.geo_mean_xyz = function (another) {
+    return new Color(this.xyz.var_mix(another.xyz, (x, y) => Math.sqrt(x * y)).toString());
+  };
+  this.harm_mean_rgb = function (another) {
+    return new Color(this.rgb.var_mix(another.rgb, (x, y) => 255 / (255 / x + 255 / y)).toString());
+  };
+  this.harm_mean_xyz = function (another) {
+    return new Color(this.xyz.var_mix(another.xyz, (x, y) => 1 / (1 / x + 1 / y)).toString());
+  };
+  this.einstein_rgb = function (another) {
+    return new Color(this.rgb.var_mix(another.rgb, (x, y) => (x + y) * 255 * 255 / (255 * 255 + x * y)).toString());
+  };
   this.amplify = function (rate) {
     return new Color(this.rgb.amplify(rate).toString());
   };
@@ -198,6 +219,9 @@ function RGBColor(r, g, b) {
     },
     amplify: function (rate) {
       return RGBColor(r * rate, g * rate, b * rate);
+    },
+    var_mix: function (another, f) {
+      return RGBColor(f(this.r, another.r), f(this.g, another.g), f(this.b, another.b));
     }
   };
 }
@@ -280,6 +304,9 @@ function XYZColor(X, Y, Z) {
     },
     subtract: function (another) {
       return XYZColor((this.X + another.X) / 2, (this.Y + another.Y) / 2, (this.Z + another.Z) / 2);
+    },
+    var_mix: function (another, f) {
+      return XYZColor(f(this.X, another.X), f(this.Y, another.Y), f(this.Z, another.Z));
     },
     amplify: function (rate) {
       return XYZColor(this.X * rate, this.Y * rate, this.Z * rate);

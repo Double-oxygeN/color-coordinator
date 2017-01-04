@@ -107,6 +107,27 @@ function draw_palette(mode, context, width, height, r_colors, n_colors) {
   case 'Subtractive':
     draw_subtractive(context, width, height, n_colors);
     break;
+  case 'Multiplicative_RGB':
+    draw_multiplicative_rgb(context, width, height, n_colors);
+    break;
+  case 'Multiplicative_XYZ':
+    draw_multiplicative_xyz(context, width, height, n_colors);
+    break;
+  case 'Geometric_RGB':
+    draw_geometric_rgb(context, width, height, n_colors);
+    break;
+  case 'Geometric_XYZ':
+    draw_geometric_xyz(context, width, height, n_colors);
+    break;
+  case 'Harmonic_RGB':
+    draw_harmonic_rgb(context, width, height, n_colors);
+    break;
+  case 'Harmonic_XYZ':
+    draw_harmonic_xyz(context, width, height, n_colors);
+    break;
+  case 'Einstein':
+    draw_einstein(context, width, height, n_colors);
+    break;
   case 'Dyads':
     draw_n_ads(context, width, height, n_colors[0], 2);
     break;
@@ -126,7 +147,7 @@ function draw_palette(mode, context, width, height, r_colors, n_colors) {
     draw_split_complemental(context, width, height, n_colors[0])
     break;
   default:
-    clear_palette(context, width, height, RGBColor(0, 0, 0));
+    clear_palette(context, width, height, new Color([0, 0, 0]));
   }
 }
 
@@ -137,7 +158,7 @@ function draw_additive(context, width, height, colors) {
   context.fillStyle = colors[1].rgb.toString();
   context.fillRect(width * 13 / 32, height * 3 / 8, width * 3 / 8, height / 2);
   context.fillStyle = colors[2].rgb.toString();
-  context.fillRect(width * 13 / 32, height * 3 / 8, width * 3 / 16, height / 4)
+  context.fillRect(width * 13 / 32, height * 3 / 8, width * 3 / 16, height / 4);
 }
 
 function draw_subtractive(context, width, height, colors) {
@@ -147,7 +168,77 @@ function draw_subtractive(context, width, height, colors) {
   context.fillStyle = colors[1].rgb.toString();
   context.fillRect(width * 13 / 32, height * 3 / 8, width * 3 / 8, height / 2);
   context.fillStyle = colors[0].subtract(colors[1]).rgb.toString();
-  context.fillRect(width * 13 / 32, height * 3 / 8, width * 3 / 16, height / 4)
+  context.fillRect(width * 13 / 32, height * 3 / 8, width * 3 / 16, height / 4);
+}
+
+function draw_multiplicative_rgb(context, width, height, colors) {
+  clear_palette(context, width, height, new Color([0xff, 0xff, 0xff]));
+  context.fillStyle = colors[0].rgb.toString();
+  context.fillRect(width / 4, height / 4, width / 4, height / 2);
+  context.fillStyle = colors[1].rgb.toString();
+  context.fillRect(width / 2, 0, width / 2, height);
+  context.fillStyle = colors[0].multiply_rgb(colors[1]).rgb.toString();
+  context.fillRect(width / 2, height / 4, width / 4, height / 2);
+}
+
+function draw_multiplicative_xyz(context, width, height, colors) {
+  clear_palette(context, width, height, new Color([0xff, 0xff, 0xff]));
+  context.fillStyle = colors[0].rgb.toString();
+  context.fillRect(width / 4, height / 4, width / 4, height / 2);
+  context.fillStyle = colors[1].rgb.toString();
+  context.fillRect(width / 2, 0, width / 2, height);
+  context.fillStyle = colors[0].multiply_xyz(colors[1]).rgb.toString();
+  context.fillRect(width / 2, height / 4, width / 4, height / 2);
+}
+
+function draw_geometric_rgb(context, width, height, colors) {
+  clear_palette(context, width, height, new Color([0xff, 0xff, 0xff]));
+  context.fillStyle = colors[0].rgb.toString();
+  context.fillRect(width * 7 / 32, height / 8, width * 3 / 8, height / 2);
+  context.fillStyle = colors[1].rgb.toString();
+  context.fillRect(width * 13 / 32, height * 3 / 8, width * 3 / 8, height / 2);
+  context.fillStyle = colors[0].geo_mean_rgb(colors[1]).rgb.toString();
+  context.fillRect(width * 13 / 32, height * 3 / 8, width * 3 / 16, height / 4);
+}
+
+function draw_geometric_xyz(context, width, height, colors) {
+  clear_palette(context, width, height, new Color([0xff, 0xff, 0xff]));
+  context.fillStyle = colors[0].rgb.toString();
+  context.fillRect(width * 7 / 32, height / 8, width * 3 / 8, height / 2);
+  context.fillStyle = colors[1].rgb.toString();
+  context.fillRect(width * 13 / 32, height * 3 / 8, width * 3 / 8, height / 2);
+  context.fillStyle = colors[0].geo_mean_xyz(colors[1]).rgb.toString();
+  context.fillRect(width * 13 / 32, height * 3 / 8, width * 3 / 16, height / 4);
+}
+
+function draw_harmonic_rgb(context, width, height, colors) {
+  clear_palette(context, width, height, new Color([0xff, 0xff, 0xff]));
+  context.fillStyle = colors[0].rgb.toString();
+  context.fillRect(width * 7 / 32, height / 8, width * 3 / 8, height / 2);
+  context.fillStyle = colors[1].rgb.toString();
+  context.fillRect(width * 13 / 32, height * 3 / 8, width * 3 / 8, height / 2);
+  context.fillStyle = colors[0].harm_mean_rgb(colors[1]).rgb.toString();
+  context.fillRect(width * 13 / 32, height * 3 / 8, width * 3 / 16, height / 4);
+}
+
+function draw_harmonic_xyz(context, width, height, colors) {
+  clear_palette(context, width, height, new Color([0xff, 0xff, 0xff]));
+  context.fillStyle = colors[0].rgb.toString();
+  context.fillRect(width * 7 / 32, height / 8, width * 3 / 8, height / 2);
+  context.fillStyle = colors[1].rgb.toString();
+  context.fillRect(width * 13 / 32, height * 3 / 8, width * 3 / 8, height / 2);
+  context.fillStyle = colors[0].harm_mean_xyz(colors[1]).rgb.toString();
+  context.fillRect(width * 13 / 32, height * 3 / 8, width * 3 / 16, height / 4);
+}
+
+function draw_einstein(context, width, height, colors) {
+  clear_palette(context, width, height, new Color([0, 0, 0]));
+  context.fillStyle = colors[0].rgb.toString();
+  context.fillRect(width * 7 / 32, height / 8, width * 3 / 8, height / 2);
+  context.fillStyle = colors[1].rgb.toString();
+  context.fillRect(width * 13 / 32, height * 3 / 8, width * 3 / 8, height / 2);
+  context.fillStyle = colors[0].einstein_rgb(colors[1]).rgb.toString();
+  context.fillRect(width * 13 / 32, height * 3 / 8, width * 3 / 16, height / 4);
 }
 
 function draw_n_ads(context, width, height, color1, n) {
