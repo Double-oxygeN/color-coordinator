@@ -1,6 +1,6 @@
 # color-coordinator
 
-色彩をどうにかするデモ
+色彩をどうにかするデモ  
 及び，ライブラリcolor.js(仮)の試作
 
 ## License
