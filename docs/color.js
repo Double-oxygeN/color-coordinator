@@ -367,7 +367,7 @@ function RGBtoHSL(rgb) {
     max = Math.max(red, Math.max(green, blue)),
     min = Math.min(red, Math.min(green, blue)),
     lgt = (max + min) * 50 / 0xff,
-    sat = (lgt < 50) ? (max - min) * 100 / (max + min) : (max - min) * 100 / (2 * 0xff - max - min);
+    sat = (max === min) ? 0 : ((lgt < 50) ? (max - min) * 100 / (max + min) : (max - min) * 100 / (2 * 0xff - max - min));
 
   if (red === green && green === blue) {
     return HSLColor(0, sat, lgt);
