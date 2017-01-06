@@ -152,6 +152,9 @@ function draw_palette(mode, context, width, height, r_colors, n_colors) {
   case 'Gradation':
     draw_gradation(context, width, height, n_colors, 60);
     break;
+  case 'Natural_Gradation':
+    draw_nat_gradation(context, width, height, n_colors, 60);
+    break;
   default:
     clear_palette(context, width, height, new Color([0, 0, 0]));
   }
@@ -277,6 +280,20 @@ function draw_nat_cpx(context, width, height, colors) {
   fixed_colors.forEach((c, i) => {
     context.fillStyle = c.rgb.toString();
     context.fillRect(width * (1 / 8 + i * 3 / 20), height / 4, width * 3 / 20, height / 2);
+  });
+}
+
+function draw_nat_gradation(context, width, height, colors, separate_num) {
+  let _ = new Library(),
+    [n, m] = colors[0].naturality,
+    hues = _.range(0, separate_num).map(i => colors[0].neutralColor(colors[1], i * 100 / (separate_num - 1)).hsv.h),
+    fixed_hues = hues.map(h => ((h < 60) ? (h + 30) : ((h < 240) ? (150 - h) : (h - 330))) / 90),
+    fixed_colors = fixed_hues.map((h, i) => new Color(colors[0].neutralColor(colors[1], i * 100 / (separate_num - 1)).hsv.setSV(m - n * Math.abs(h), n * h + 50).toString()));
+
+  clear_palette(context, width, height, new Color([0, 0, 0]));
+  fixed_colors.forEach((c, i) => {
+    context.fillStyle = c.rgb.toString();
+    context.fillRect(width * (1 / 8 + i * 3 / 4 / separate_num), height / 4, width / 2 / separate_num, height / 2);
   });
 }
 
