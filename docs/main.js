@@ -61,7 +61,7 @@ window.onload = function (ev) {
       pixeldata = ctx_p.getImageData(mouse.x, mouse.y, 1, 1).data,
       pixel_color = new Color([pixeldata[0], pixeldata[1], pixeldata[2]]);
 
-    result_display.innerHTML = pixel_color.rgb.toColorCode() + "<br>" + pixel_color.rgb.toString() + "<br>" + pixel_color.hsv.toString() + "<br>" + pixel_color.hsl.toString() + "<br>" + pixel_color.xyz.toString() + "<br>" + pixel_color.xyz.toYxyString();
+    result_display.innerHTML = pixel_color.rgb.toColorCode() + "<br>" + pixel_color.rgb.toString() + "<br>" + pixel_color.hsv.toString() + "<br>" + pixel_color.hsl.toString() + "<br>" + pixel_color.xyz.toString() + "<br>" + pixel_color.xyz.toYxyString() + "<br>Naturality: " + pixel_color.naturality;
   };
   palette.onmouseleave = function (e) {
     result_display.innerHTML = "";
@@ -144,7 +144,13 @@ function draw_palette(mode, context, width, height, r_colors, n_colors) {
     draw_n_ads(context, width, height, n_colors[0], 6);
     break;
   case 'Split':
-    draw_split_complemental(context, width, height, n_colors[0])
+    draw_split_complemental(context, width, height, n_colors[0]);
+    break;
+  case 'Natural':
+    draw_nat_cpx(context, width, height, n_colors);
+    break;
+  case 'Gradation':
+    draw_gradation(context, width, height, n_colors, 60);
     break;
   default:
     clear_palette(context, width, height, new Color([0, 0, 0]));
@@ -242,11 +248,12 @@ function draw_einstein(context, width, height, colors) {
 }
 
 function draw_n_ads(context, width, height, color1, n) {
+  let _ = new Library();
   clear_palette(context, width, height, new Color([0, 0, 0]));
-  for (let i = 0; i < n; i++) {
+  _.range(0, n).forEach(i => {
     context.fillStyle = color1.rotate(Math.round(360 * i / n)).rgb.toString();
     context.fillRect(width * (1 / 4 + i * 5 / 11 / (n - 1)), height / 4, width / 22, height / 2);
-  }
+  });
 }
 
 function draw_split_complemental(context, width, height, color1) {
@@ -257,4 +264,28 @@ function draw_split_complemental(context, width, height, color1) {
   context.fillRect(width * (1 / 4 + 10 / 33), height / 4, width / 22, height / 2);
   context.fillStyle = color1.rotate(Math.round(360 * 7 / 12)).rgb.toString();
   context.fillRect(width * (1 / 4 + 5 / 11), height / 4, width / 22, height / 2);
+}
+
+function draw_nat_cpx(context, width, height, colors) {
+  let _ = new Library(),
+    [n, m] = colors[0].naturality,
+    hues = _.range(0, 5).map(i => colors[0].neutralColor(colors[1], i * 25).hsv.h),
+    fixed_hues = hues.map(h => ((h < 60) ? (h + 30) : ((h < 240) ? (150 - h) : (h - 330))) / 90),
+    fixed_colors = fixed_hues.map((h, i) => new Color(colors[0].neutralColor(colors[1], i * 25).hsv.setSV(m - n * Math.abs(h), n * h + 50).toString()));
+
+  clear_palette(context, width, height, new Color([0, 0, 0]));
+  fixed_colors.forEach((c, i) => {
+    context.fillStyle = c.rgb.toString();
+    context.fillRect(width * (1 / 8 + i * 3 / 20), height / 4, width * 3 / 20, height / 2);
+  });
+}
+
+function draw_gradation(context, width, height, colors, separate_num) {
+  let _ = new Library();
+  clear_palette(context, width, height, new Color([0, 0, 0]));
+
+  _.range(0, separate_num).forEach(i => {
+    context.fillStyle = colors[0].neutralColor(colors[1], i * 100 / (separate_num - 1)).rgb.toString();
+    context.fillRect(width * (1 / 8 + i * 3 / 4 / separate_num), height / 4, width / 2 / separate_num, height / 2);
+  });
 }

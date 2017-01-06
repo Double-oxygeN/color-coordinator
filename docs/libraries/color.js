@@ -94,7 +94,13 @@ function Color(args) {
       hsv = RGBtoHSV(rgb);
       hsl = RGBtoHSL(rgb);
     } else {
-      console.log("name?");
+      let g = document.createElement('canvas').getContext('2d');
+      g.fillStyle = args;
+      numbers = [1, 3, 5].map(i => parseInt(g.fillStyle.substr(i, 2), 16));
+      rgb = RGBColor(numbers[0], numbers[1], numbers[2]);
+      hsv = RGBtoHSV(rgb);
+      hsl = RGBtoHSL(rgb);
+      xyz = RGBtoXYZ(rgb);
     }
     break;
   default:
@@ -108,6 +114,7 @@ function Color(args) {
   this.hsv = hsv;
   this.hsl = hsl;
   this.xyz = xyz;
+  this.naturality = calcNaturality(hsv);
   this.toString = function () {
     return this.xyz.toString();
   };
@@ -146,6 +153,21 @@ function Color(args) {
   };
   this.amplify = function (rate) {
     return new Color(this.rgb.amplify(rate).toString());
+  };
+  this.neutralColor = function (another, percentage) {
+    if (percentage === 0) {
+      return this;
+    } else if (percentage === 100) {
+      return another;
+    }
+    let this_hsl = this.hsl,
+      another_hsl = another.hsl,
+      h_diff = Math.abs(another_hsl.h - this_hsl.h),
+      new_h = this_hsl.h + (((h_diff < 180) ? 0 : ((this_hsl.h < another_hsl.h) ? -360 : 360)) + another_hsl.h - this_hsl.h) * percentage / 100,
+      new_s = this_hsl.s + (another_hsl.s - this_hsl.s) * percentage / 100,
+      new_l = this_hsl.l + (another_hsl.l - this_hsl.l) * percentage / 100;
+
+    return new Color((new HSLColor(new_h, new_s, new_l)).toString());
   };
 }
 
@@ -245,6 +267,9 @@ function HSVColor(h, s, v) {
     },
     rotate: function (degree) {
       return HSVColor(h + degree, s, v);
+    },
+    setSV: function (new_s, new_v) {
+      return HSVColor(h, new_s, new_v);
     }
   };
 }
@@ -267,6 +292,9 @@ function HSLColor(h, s, l) {
     },
     rotate: function (degree) {
       return HSLColor(h + degree, s, l);
+    },
+    setSL: function (new_s, new_l) {
+      return HSLColor(h, new_s, new_l);
     }
   };
 }
@@ -418,10 +446,19 @@ function XYZtoRGB(xyz) {
     red = (3.98876 * x - 2.41599 * y - 0.520211 * z) * 0xff,
     green = (-1.40053 * x + 2.37729 * y - 0.0329421 * z) * 0xff,
     blue = (-0.0326964 * x - 0.182594 * y + 1.47165 * z) * 0xff;
-  // if (red < 0 || green < 0 || blue < 0) {
-  //   return RGBColor(0, 0, 0);
-  // } else {
-  //   return RGBColor(red, green, blue);
-  // }
   return RGBColor(Math.max(red, 0), Math.max(green, 0), Math.max(blue, 0));
+}
+
+/*
+ * Utilities
+ */
+
+function calcNaturality(hsv) {
+  let hue = hsv.h,
+    saturation = hsv.s,
+    brightness = hsv.v,
+    hue_fixed = ((hue < 60) ? (hue + 30) : ((hue < 240) ? (150 - hue) : (hue - 330))) / 90,
+    nat_h = (hue_fixed === 0) ? 30 : ((brightness - 50) / hue_fixed);
+
+  return [nat_h, saturation + nat_h * Math.abs(hue_fixed)];
 }
