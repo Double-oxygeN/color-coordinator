@@ -98,6 +98,12 @@ function init_eye(eye, regArray, init_colors) {
 
 function draw_palette(mode, context, width, height, r_colors, n_colors) {
   switch (mode) {
+  case 'Comparison':
+    draw_compare(context, width, height, n_colors);
+    break;
+  case 'Readability':
+    draw_readability(context, width, height, n_colors, "Aaあ篝çáïξ¿}");
+    break;
   case 'Additive_L':
     draw_additive(context, width, height, n_colors);
     break;
@@ -158,6 +164,29 @@ function draw_palette(mode, context, width, height, r_colors, n_colors) {
   default:
     clear_palette(context, width, height, new Color([0, 0, 0]));
   }
+}
+
+function draw_compare(context, width, height, colors) {
+  clear_palette(context, width, height, new Color([0, 0, 0]));
+  context.fillStyle = colors[0].rgb.toString();
+  context.fillRect(width / 8, height / 4, width * 3 / 8, height / 2);
+  context.fillStyle = colors[1].rgb.toString();
+  context.fillRect(width / 2, height / 4, width * 3 / 8, height / 2);
+}
+
+function draw_readability(context, width, height, colors, chars) {
+  let bl = 0;
+  clear_palette(context, width, height, colors[1]);
+  context.fillStyle = colors[0].rgb.toString();
+  context.strokeStyle = colors[0].rgb.toString();
+  context.textAlign = 'left';
+  context.textBaseline = 'top';
+  [8, 12, 16, 20, 24, 28, 32, 48].forEach(p => {
+    context.font = p.toString(10) + "px serif";
+    context.fillText(chars + "  " + p.toString(10) + " px", 6, 6 + bl);
+    context.strokeText(chars + "  " + p.toString(10) + " px", 6, height / 2 + 6 + bl);
+    bl += p + 1;
+  });
 }
 
 function draw_additive(context, width, height, colors) {
