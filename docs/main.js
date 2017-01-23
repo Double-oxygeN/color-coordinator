@@ -10,9 +10,12 @@ window.onload = function (ev) {
     express_color2 = document.getElementById('second_color_expr'),
     result_display = document.getElementById('result'),
     change_button = document.getElementById('change_button'),
+    guide_area = document.getElementById('guide'),
     eye = new Eye(),
     regulated_color = [],
     first_ID;
+
+  guide_area.value = GUIDE_TEXTS[0];
 
   draw_chromaticity_diagram(ctx_diag, canvas.width, 1);
   first_ID = init_eye(eye, regulated_color, [new Color(selected_color1.value), new Color(selected_color2.value)]);
@@ -45,6 +48,7 @@ window.onload = function (ev) {
 
   selector.onchange = function (e) {
     std_draw_palette();
+    guide_area.value = GUIDE_TEXTS[e.target.selectedIndex];
   };
 
   change_button.onclick = function (e) {
